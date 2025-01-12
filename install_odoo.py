@@ -46,8 +46,9 @@ def create_project_structure():
     # Create directories
     for folder_path in PROJECT_DIR_STRUCTURE:
         os.makedirs(folder_path, exist_ok=True)
-        print(f"Created: {folder_path}")
-
+        print(f"Directory '{folder_path}' has been created or already exists.")
+        
+    print("All directories have been created or already exist.")
 
 # ============================================================
 def create_conf_file():
