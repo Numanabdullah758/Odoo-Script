@@ -18,7 +18,6 @@ ODOO_PORT = 8069
 VIRTUAL_ENVIRONMENT_NAME = "venv"
 # -------------------------------------------------------------------
 
-
 ODOO_VERSION = f"odoo{BRANCH}"
 BASE_DIR = os.getcwd()
 PROJECT_DIR = os.path.join(BASE_DIR, PROJECT_NAME)
@@ -39,10 +38,10 @@ ODOO_CONFIG_FILE = os.path.join(CONFIG_DIR, "odoo.conf")
 REQUIREMENTS_FILE = os.path.join(ODOO_CLONE_DIR, "requirements.txt")
 
 VIRTUAL_ENVIRONMENT_DIR = os.path.join(PROJECT_DIR, VIRTUAL_ENVIRONMENT_NAME)
+# -------------------------------------------------------------------
 
 
-
-
+# ============================================================
 def create_project_structure():
     # Create directories
     for folder_path in PROJECT_DIR_STRUCTURE:
@@ -50,8 +49,7 @@ def create_project_structure():
         print(f"Created: {folder_path}")
 
 
-#Log file location
-#logfile = /var/log/odoo/odoo.log
+# ============================================================
 def create_conf_file():
 
     with open(ODOO_CONFIG_FILE, 'w') as file:
@@ -70,7 +68,6 @@ default_productivity_apps = True
 ; Script: {ODOO_BIN}
 ; Script Parameters -c {ODOO_CONFIG_FILE} -u iwss_reports
 
-
 ; =============== Hello World ===============
 addons_path = {ODOO_ADDONS_DIR},{CUSTOM_ADDONS_DIR}
 ; This filter matches databases that start with
@@ -80,7 +77,6 @@ addons_path = {ODOO_ADDONS_DIR},{CUSTOM_ADDONS_DIR}
 ; This filter forces Odoo to use multiple
 ; dbfilter = ^(database1|database2|database3)$
 ; ===========================================
-
 
 ; log_level = debug
 ; logfile = /Desktop/odoo.log
@@ -94,13 +90,13 @@ addons_path = {ODOO_ADDONS_DIR},{CUSTOM_ADDONS_DIR}
 ; proxy_mode = True
 ; timezone = Europe/Berlin
 
-
 """)
 
     print(f"Created: {ODOO_CONFIG_FILE}")
 
 
 
+# ============================================================
 def setup_virtual_environment():
     
     # python3.11 -m venv odoo17-venv
@@ -127,8 +123,7 @@ def setup_virtual_environment():
         subprocess.run(f"source {activate_script} && pip3 install -r {REQUIREMENTS_FILE}", shell=True, executable="/bin/bash")
 
 
-
-
+# ============================================================
 def clone_odoo_repository():
 
     clone_command = ["git", "clone", "--depth", "1", "--branch", BRANCH, GITHUB_ODOO_URL, ODOO_CLONE_DIR]
@@ -144,13 +139,7 @@ def clone_odoo_repository():
         sys.exit(1)  # Exit if the clone fails
 
 
-
-
-
-
-
-
-
+# ============================================================
 def run_command(commands):
 
     for command in commands:
@@ -162,7 +151,7 @@ def run_command(commands):
             print(f"Error occurred while running command: {command}\n{e.stderr.decode()}")
 
 
-
+# ============================================================
 def create_custom_addons():
     command = f"{ODOO_BIN} scaffold {CUSTOM_MODULE_NAME} {CUSTOM_ADDONS_DIR}"
     activate_script = os.path.join(VIRTUAL_ENVIRONMENT_DIR, "bin", "activate")
@@ -177,10 +166,7 @@ def create_custom_addons():
         print(f"Error occurred while running command: {command}\n{e.stderr.decode()}")
 
 
-
-
-
-
+# ============================================================
 def main():
 #     https://www.rosehosting.com/blog/how-to-install-odoo-17-on-ubuntu-24-04/
 
@@ -219,7 +205,6 @@ def main():
 
     create_custom_addons()
 
-
     print("Project setup complete!")
     
     # Step 6. Create Odoo Systemd Unit file
@@ -245,8 +230,8 @@ def main():
 
 # systemctl daemon-reload
 # systemctl enable --now odoo17
-
 # systemctl status odoo17
+
 
 if __name__ == "__main__":
     main()
