@@ -181,7 +181,7 @@ def main():
 #     ]
     commands = [
         f"sudo apt install {PYTHON_VERSION} {PYTHON_VERSION}-venv {PYTHON_VERSION}-dev {PYTHON_VERSION}-distutils -y",
-        f"sudo apt install build-essential wget git libfreetype-dev libxml2-dev libzip-dev libsasl2-dev node-less libjpeg-dev zlib1g-dev libpq-dev libxslt1-dev libldap2-dev libtiff5-dev libopenjp2-7-dev libcap-dev",
+        f"sudo apt install build-essential wget git libfreetype-dev libxml2-dev libzip-dev libsasl2-dev node-less libjpeg-dev zlib1g-dev libpq-dev libxslt1-dev libldap2-dev libtiff5-dev libopenjp2-7-dev libcap-dev -y",
     ]
     run_command(commands)
 
