@@ -13,11 +13,11 @@ GITHUB_ODOO_URL= "https://www.github.com/odoo/odoo"
 BRANCH = "18.0" # odoo version
 PYTHON_VERSION = "python3.11"
 PROJECT_NAME = f"odoo_{BRANCH}"
-CUSTOM_MODULE_NAME = "custom_module" # sales_extension business_customizations
+CUSTOM_MODULE_NAME = "custom_module" # e.g. "sales_extension" or "business_customizations".
 
-ODOO_ADMIN_PASSWORD = "Srt0ngh0ld0d00"
-ODOO_PSQL_USER = f"user_odoo{BRANCH}"
-ODOO_PSQL_USER_PASSWORD = "P$ql@Odoo758"
+ODOO_ADMIN_PASSWORD = "Admin@758"
+ODOO_PSQL_USER = "odoo_psql_user"
+ODOO_PSQL_USER_PASSWORD = "OdooPSQL758"
 ODOO_PORT = 8069
 
 VIRTUAL_ENVIRONMENT_NAME = "venv"
@@ -66,12 +66,12 @@ xmlrpc_port = {ODOO_PORT}
 default_productivity_apps = True
 
 
-; =============== Pycharm ===============
+; =============== Pycharm(Run/Debug Configurations) ===============
 ; Working Directory: {PROJECT_DIR}
 ; Script: {ODOO_BIN}
-; Script Parameters -c {ODOO_CONFIG_FILE} -u iwss_reports
+; Script Parameters -c {ODOO_CONFIG_FILE} -u {CUSTOM_MODULE_NAME}
 
-; =============== Hello World ===============
+; =============== {PROJECT_NAME} ===============
 addons_path = {ODOO_ADDONS_DIR},{CUSTOM_ADDONS_DIR}
 ; This filter matches databases that start with
 ; dbfilter = ^OdooDB*$
@@ -108,7 +108,6 @@ def setup_virtual_environment():
 # ============================================================
 def clone_odoo_repository():
     clone_command = ["git", "clone", "--depth", "1", "--branch", BRANCH, GITHUB_ODOO_URL, ODOO_CLONE_DIR]
-    #clone_command = ["git", "clone", "--branch", BRANCH, GITHUB_ODOO_URL, ODOO_CLONE_DIR]
 
     try:
         result = subprocess.run(clone_command, check=True)
