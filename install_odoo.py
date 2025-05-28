@@ -16,7 +16,7 @@ PROJECT_NAME = f"odoo_{BRANCH}"
 CUSTOM_MODULE_NAME = "custom_module" # e.g. "sales_extension" or "business_customizations".
 
 ODOO_ADMIN_PASSWORD = "Admin@758"
-ODOO_PSQL_USER = "Odoo_psql_user"
+ODOO_PSQL_USER = "odoo_psql_user"
 ODOO_PSQL_USER_PASSWORD = "OdooPSQL758"
 ODOO_PORT = 8069
 
@@ -151,8 +151,7 @@ def main():
     run_command(commands)
 
     commands = [
-        # f"sudo apt install postgresql postgresql-client -y",
-        f"sudo apt install postgresql postgresql-client",
+        f"sudo apt install postgresql postgresql-client -y",
         f"""sudo -u postgres psql -c "CREATE USER {ODOO_PSQL_USER} WITH CREATEDB NOCREATEROLE NOSUPERUSER PASSWORD '{ODOO_PSQL_USER_PASSWORD}';" """
     ]
     run_command(commands)
@@ -197,4 +196,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
