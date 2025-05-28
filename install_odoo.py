@@ -12,7 +12,8 @@ import subprocess
 GITHUB_ODOO_URL= "https://www.github.com/odoo/odoo"
 BRANCH = "18.0" # odoo version
 PYTHON_VERSION = "python3.11"
-PROJECT_NAME = f"odoo_{BRANCH}"
+# PROJECT_NAME = f"odoo_{BRANCH}"
+PROJECT_NAME = f"odoo_18"
 CUSTOM_MODULE_NAME = "custom_module" # e.g. "sales_extension" or "business_customizations".
 
 ODOO_ADMIN_PASSWORD = "Admin@758"
@@ -33,8 +34,12 @@ ODOO_CLONE_DIR = os.path.join(PROJECT_DIR, ODOO_VERSION)
 ODOO_BIN = os.path.join(ODOO_CLONE_DIR, "odoo-bin")
 ODOO_ADDONS_DIR = os.path.join(ODOO_CLONE_DIR, "addons")
 ODOO_CONFIG_FILE = os.path.join(CONFIG_DIR, "odoo.conf")
+
+WANT_SYSTEMD_SERVICE = False
+ODOO_SYSTEMD_SERVICE_FILE = os.path.join("/etc/systemd/system", f"{PROJECT_NAME}.service")
 REQUIREMENTS_FILE = os.path.join(ODOO_CLONE_DIR, "requirements.txt")
 VIRTUAL_ENVIRONMENT_DIR = os.path.join(PROJECT_DIR, VIRTUAL_ENVIRONMENT_NAME)
+VENV_PYTHON_EXEC = os.path.join(VIRTUAL_ENVIRONMENT_DIR, "bin", PYTHON_VERSION)
 # Define the Project folder structure
 PROJECT_DIR_STRUCTURE = [
     CUSTOM_ADDONS_DIR,
@@ -143,6 +148,32 @@ def create_custom_addons():
 
 
 # ============================================================
+def create_systemd_service(USER_NAME):
+    with open(ODOO_SYSTEMD_SERVICE_FILE, 'w') as file:
+        file.write(f"""
+[Unit]
+Description={PROJECT_NAME}
+Requires=postgresql.service
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+SyslogIdentifier={PROJECT_NAME}
+PermissionsStartOnly=true
+User={USER_NAME}
+Group={USER_NAME}
+
+ExecStart={VENV_PYTHON_EXEC} {ODOO_BIN} -c {ODOO_CONFIG_FILE}
+StandardOutput=journal+console
+
+[Install]
+WantedBy=multi-user.target
+                   
+""")
+        
+    print(f"Created: {ODOO_SYSTEMD_SERVICE_FILE}")
+
+# ============================================================
 def main():
     commands = [
         f"sudo apt install {PYTHON_VERSION} {PYTHON_VERSION}-venv {PYTHON_VERSION}-dev {PYTHON_VERSION}-distutils -y",
@@ -166,33 +197,21 @@ def main():
 
     create_custom_addons()
 
+    if WANT_SYSTEMD_SERVICE:
+        USER_NAME = os.getlogin()
+        print(USER_NAME)
+
+        create_systemd_service(USER_NAME)
+
+        commands = [
+            f"systemctl daemon-reload",
+            f"systemctl enable --now {PROJECT_NAME}",
+            # f"systemctl status {PROJECT_NAME}"
+        ]
+        run_command(commands)
+
     print("Project setup complete!")
     
-#     Step 6. Create Odoo Systemd Unit file
-#     nano /etc/systemd/system/odoo17.service
-     
-#     [Unit]
-#     Description=odoo17
-#     Requires=postgresql.service
-#     After=network.target postgresql.service
-#     
-#     [Service]
-#     Type=simple
-#     SyslogIdentifier=odoo17
-#     PermissionsStartOnly=true
-#     User=odoo17
-#     Group=odoo17
-#     ExecStart=/opt/odoo17/odoo17-venv/bin/python3 /opt/odoo17/odoo17/odoo-bin -c /etc/odoo17.conf
-#     StandardOutput=journal+console
-#
-#     [Install]
-#     WantedBy=multi-user.target
-
-
-# systemctl daemon-reload
-# systemctl enable --now odoo17
-# systemctl status odoo17
-
 
 if __name__ == "__main__":
     main()
