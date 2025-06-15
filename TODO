@@ -1,2 +1,6 @@
-sudo add-apt-repository ppa:deadsnakes/ppa
-sudo apt update
+# "local" is for Unix domain socket connections only
+local   all             all                                     md5
+
+OR
+
+create psql user with same name as your current user you login with
